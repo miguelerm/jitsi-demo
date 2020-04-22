@@ -27,9 +27,9 @@
       <p>Seleccione la clase a la que ingresar</p>
 
       <ul class="room-list">
-        <li><a href="#" class="room-btn">Estructuras de datos</a></li>
-        <li><a href="#" class="room-btn">Investigaci&oacute;n de operaciones</a></li>
-        <li><a href="#" class="room-btn">Compiladores</a></li>
+        <li><a href="#" data-room-id="038d5051-8569-40c9-a68a-27e6e52c93fd" class="room-btn">Estructuras de datos</a></li>
+        <li><a href="#" data-room-id="5997a6a3-3f37-4153-9bfa-75d7a8a94116" class="room-btn">Investigaci&oacute;n de operaciones</a></li>
+        <li><a href="#" data-room-id="52d28947-2a36-4465-aad6-94c4824ef6e8" class="room-btn">Compiladores</a></li>
       </ul>
     </div>
 
@@ -41,29 +41,36 @@
       var $displayName = $("#display-name");
       var $home = $("#home");
       var roomPanel = $(".room-panel")[0];
+
       var domain = "meet.jit.si";
+      
       var options = {
         parentNode: roomPanel,
         interfaceConfigOverwrite: {
-          APP_NAME: "Demo Jitsi",
+            APP_NAME: "Demo Jitsi",
           PROVIDER_NAME: "Mike",
         },
-      };
-
-      $(".room-btn").click(function (e) {
+    };
+    
+    $(".room-btn").click(function (e) {
         e.preventDefault();
         $home.hide();
-        var roomName = $(e.target).text();
+        var $target = $(e.target);
+        
+        var roomName = $target.attr('data-room-id');
+        var subject = $target.text();
+      
         var roomOptions = Object.assign(options, {
-          roomName: roomName,
-          userInfo: {
-            displayName: $displayName.val(),
-          },
+            roomName: roomName,
+            userInfo: {
+                displayName: $displayName.val()
+            },
         });
-
-        console.log(roomOptions);
+        
         var call = new JitsiMeetExternalAPI(domain, roomOptions);
+        call.executeCommand('subject', subject);
         call.addEventListener("readyToClose", readyToClose);
+
       });
 
       function readyToClose(e) {
