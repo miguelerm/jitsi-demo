@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jitsi Demo</title>
+    <style>
+      .room-panel {
+        height: 500px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Jitsi Demo</h1>
+
+    <div id="home">
+      <form class="user-info">
+        <div>
+          <label>
+            <span>Nombre del estudiante:</span>
+            <input id="display-name" type="text" value="Cosme Fulanito" />
+          </label>
+        </div>
+      </form>
+
+      <p>Seleccione la clase a la que ingresar</p>
+
+      <ul class="room-list">
+        <li><a href="#" class="room-btn">Estructuras de datos</a></li>
+        <li><a href="#" class="room-btn">Investigaci&oacute;n de operaciones</a></li>
+        <li><a href="#" class="room-btn">Compiladores</a></li>
+      </ul>
+    </div>
+
+    <div class="room-panel"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script>
+      var $displayName = $("#display-name");
+      var $home = $("#home");
+      var roomPanel = $(".room-panel")[0];
+      var domain = "meet.jit.si";
+      var options = {
+        parentNode: roomPanel,
+        interfaceConfigOverwrite: {
+          APP_NAME: "Demo Jitsi",
+          PROVIDER_NAME: "Mike",
+        },
+      };
+
+      $(".room-btn").click(function (e) {
+        e.preventDefault();
+        $home.hide();
+        var roomName = $(e.target).text();
+        var roomOptions = Object.assign(options, {
+          roomName: roomName,
+          userInfo: {
+            displayName: $displayName.val(),
+          },
+        });
+
+        console.log(roomOptions);
+        var call = new JitsiMeetExternalAPI(domain, roomOptions);
+        call.addEventListener("readyToClose", readyToClose);
+      });
+
+      function readyToClose(e) {
+        this.dispose();
+        $home.show();
+      }
+    </script>
+  </body>
+</html>
